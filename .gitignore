@@ -43,6 +43,8 @@ Thumbs.db
 # Environment variables
 .env
 .env.local
+.env.*
+!.env.example
 
 # Backup files
 *.backup

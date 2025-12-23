@@ -14,8 +14,8 @@ except ImportError:
     genai = None
     print("⚠️ google-generativeai paketi yüklü değil. 'pip install google-generativeai' komutu ile yükleyin.")
 
-# Gemini API Key - Environment variable'dan al veya buraya yaz
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyCUBDoDHFx7sziR6Uaj0D65F4fICYnvCDA")  # Environment variable'dan al, yoksa boş string
+# Gemini API Key - Environment variable'dan al
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")  # Environment variable'dan al, yoksa boş string
 
 # Eğer environment variable yoksa ve boş string ise, kullanıcıya uyarı ver
 if not GEMINI_API_KEY:
