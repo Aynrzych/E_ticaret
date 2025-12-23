@@ -1,6 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_pymongo import PyMongo
 import os
+from dotenv import load_dotenv
+
+# .env dosyasını yükle
+load_dotenv()
 
 from analiz.analiz import rakip_analizi, dinamik_fiyat_oneri, load_data, puan_ozellik_analizi, yuksek_puan_yorum_analizi
 
@@ -14,12 +18,13 @@ except ImportError:
     genai = None
     print("⚠️ google-generativeai paketi yüklü değil. 'pip install google-generativeai' komutu ile yükleyin.")
 
-# Gemini API Key
-GEMINI_API_KEY = "AIzaSyCUBDoDHFx7sziR6Uaj0D65F4fICYnvCDA"
+# Gemini API Key - .env dosyasından oku
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 
 # Eğer API key boşsa uyarı ver
 if not GEMINI_API_KEY:
     print("⚠️ UYARI: GEMINI_API_KEY bulunamadı. Chatbot özelliği çalışmayacak.")
+    print("   💡 .env dosyası oluşturup GEMINI_API_KEY=your_api_key_here ekleyin.")
 
 app = Flask(__name__)
 
