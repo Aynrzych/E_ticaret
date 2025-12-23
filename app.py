@@ -14,14 +14,12 @@ except ImportError:
     genai = None
     print("⚠️ google-generativeai paketi yüklü değil. 'pip install google-generativeai' komutu ile yükleyin.")
 
-# Gemini API Key - Environment variable'dan al
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")  # Environment variable'dan al, yoksa boş string
+# Gemini API Key
+GEMINI_API_KEY = "AIzaSyCUBDoDHFx7sziR6Uaj0D65F4fICYnvCDA"
 
-# Eğer environment variable yoksa ve boş string ise, kullanıcıya uyarı ver
+# Eğer API key boşsa uyarı ver
 if not GEMINI_API_KEY:
     print("⚠️ UYARI: GEMINI_API_KEY bulunamadı. Chatbot özelliği çalışmayacak.")
-    print("   Lütfen environment variable olarak ayarlayın: export GEMINI_API_KEY='your-api-key'")
-    print("   Veya app.py dosyasında GEMINI_API_KEY değişkenine API key'inizi yazın.")
 
 app = Flask(__name__)
 
