@@ -1,0 +1,20 @@
+[
+  {
+    "product_id": "urun_id_1",
+    "product_name": "Ürün Adı 1",
+    "category": "Kategori Adı",
+    "url": "https://www.akakce.com/urun-linki.html",
+    "collection": "e_ticaret_offers"
+  },
+  {
+    "product_id": "urun_id_2",
+    "product_name": "Ürün Adı 2",
+    "category": "Kategori Adı",
+    "url": "https://www.akakce.com/urun-linki.html",
+    "collection": "e_ticaret_offers"
+  }
+]
+
+
+
+

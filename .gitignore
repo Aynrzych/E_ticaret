@@ -1,0 +1,58 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# MongoDB
+*.log
+
+# Environment variables
+.env
+.env.local
+
+# Backup files
+*.backup
+*.bak
+targets.json.backup
+
+# Chrome driver (if downloaded)
+chromedriver.exe
+geckodriver.exe
+
+# Test files (optional - remove if you want to include them)
+# test_*.py
+
