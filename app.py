@@ -28,7 +28,9 @@ if not GEMINI_API_KEY:
 
 app = Flask(__name__)
 
-app.config["MONGO_URI"] = "mongodb://localhost:27017/missha_price_data"
+# MongoDB URI - .env dosyasından oku, yoksa varsayılan değeri kullan
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/missha_price_data")
+app.config["MONGO_URI"] = MONGO_URI
 mongo = PyMongo(app)
 
 
