@@ -75,7 +75,7 @@ python main.py product_id
 
 ### Web Arayüzü
 
-Tarayıcıda `http://localhost:5000` adresine gidin.
+Tarayıcıda `http://localhost:5001` adresine gidin.
 
 ## Proje Yapısı
 
