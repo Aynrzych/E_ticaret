@@ -117,4 +117,5 @@ E-Ticaret-Projesi/
 ## Lisans
 
 Bu proje eğitim amaçlıdır.
+Mühendislikte bilgisayar uygulamaları dersi kapsamında gerçekleştirilmiştir.
 
