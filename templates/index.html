@@ -30,6 +30,75 @@
             margin: 24px auto;
             padding: 0 16px;
         }
+        .filters {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
+        }
+        .filters h3 {
+            margin: 0 0 16px;
+            font-size: 1rem;
+            color: #374151;
+        }
+        .filter-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: end;
+        }
+        .filter-item {
+            flex: 1;
+            min-width: 200px;
+        }
+        .filter-item label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+        .filter-item select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            background: white;
+            color: #111827;
+        }
+        .filter-item select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        .filter-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
         .card {
             background: white;
             border-radius: 10px;
@@ -63,6 +132,11 @@
         .card a:hover {
             background: #1d4ed8;
         }
+        .results-info {
+            margin-bottom: 16px;
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
         footer {
             text-align: center;
             padding: 16px;
@@ -79,6 +153,51 @@
     </header>
 
     <main>
+        <!-- Filtreleme Bölümü -->
+        <div class="filters">
+            <h3>🔍 Ürün Filtreleme</h3>
+            <form method="GET" action="{{ url_for('index') }}" id="filterForm">
+                <div class="filter-group">
+                    <div class="filter-item">
+                        <label for="category">Kategori Seçin</label>
+                        <select name="category" id="category" onchange="updateBrands()">
+                            <option value="">Tüm Kategoriler</option>
+                            {% for cat in categories %}
+                            <option value="{{ cat }}" {% if selected_category == cat %}selected{% endif %}>
+                                {{ cat }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label for="brand">Marka Seçin</label>
+                        <select name="brand" id="brand">
+                            <option value="">Tüm Markalar</option>
+                            {% for brand in brands %}
+                            <option value="{{ brand }}" {% if selected_brand == brand %}selected{% endif %}>
+                                {{ brand }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="filter-actions">
+                        <button type="submit" class="btn btn-primary">Filtrele</button>
+                        <a href="{{ url_for('index') }}" class="btn btn-secondary" style="text-decoration: none; display: inline-block;">Temizle</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Sonuç Bilgisi -->
+        {% if products %}
+        <div class="results-info">
+            <strong>{{ products|length }}</strong> ürün bulundu
+            {% if selected_category %} - Kategori: <strong>{{ selected_category }}</strong>{% endif %}
+            {% if selected_brand %} - Marka: <strong>{{ selected_brand }}</strong>{% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Ürün Listesi -->
         {% if products %}
             {% for product in products %}
             <div class="card">
@@ -96,13 +215,21 @@
             </div>
             {% endfor %}
         {% else %}
-            <p style="color: #b91c1c;">⚠️ Veritabanında gösterilecek ürün bulunamadı. Lütfen `offers_raw` koleksiyonunu kontrol edin.</p>
+            <p style="color: #b91c1c;">⚠️ Seçilen kriterlere uygun ürün bulunamadı.</p>
         {% endif %}
     </main>
 
     <footer>
         <p>&copy; 2025 E-Ticaret Analiz Sistemi</p>
     </footer>
+
+    <script>
+        function updateBrands() {
+            // Kategori değiştiğinde markaları güncellemek için formu submit et
+            // Veya AJAX ile dinamik yükleme yapılabilir
+            document.getElementById('filterForm').submit();
+        }
+    </script>
 
 </body>
 </html>

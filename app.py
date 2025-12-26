@@ -1,10 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_pymongo import PyMongo
 import os
-from dotenv import load_dotenv
-
-# .env dosyasını yükle
-load_dotenv()
 
 from analiz.analiz import rakip_analizi, dinamik_fiyat_oneri, load_data, puan_ozellik_analizi, yuksek_puan_yorum_analizi
 
@@ -18,19 +14,18 @@ except ImportError:
     genai = None
     print("⚠️ google-generativeai paketi yüklü değil. 'pip install google-generativeai' komutu ile yükleyin.")
 
-# Gemini API Key - .env dosyasından oku
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+# Gemini API Key - Doğrudan buraya ekleyin
+GEMINI_API_KEY = "AIzaSyDkuJQDKhU9nq8LH6woaOd2LGr4EUfFphQ"
 
-# Eğer API key boşsa uyarı ver
-if not GEMINI_API_KEY:
-    print("⚠️ UYARI: GEMINI_API_KEY bulunamadı. Chatbot özelliği çalışmayacak.")
-    print("   💡 .env dosyası oluşturup GEMINI_API_KEY=your_api_key_here ekleyin.")
+# Eğer API key boşsa veya placeholder ise uyarı ver
+if not GEMINI_API_KEY or GEMINI_API_KEY == "your_api_key_here":
+    print("⚠️ UYARI: GEMINI_API_KEY ayarlanmamış. Chatbot özelliği çalışmayacak.")
+    print("   💡 app.py dosyasında GEMINI_API_KEY değişkenine API key'inizi ekleyin.")
 
 app = Flask(__name__)
 
-# MongoDB URI - .env dosyasından oku, yoksa varsayılan değeri kullan
-MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/missha_price_data")
-app.config["MONGO_URI"] = MONGO_URI
+# MongoDB URI
+app.config["MONGO_URI"] = "mongodb://localhost:27017/missha_price_data"
 mongo = PyMongo(app)
 
 
@@ -38,7 +33,13 @@ mongo = PyMongo(app)
 def index():
     """
     Tüm ürünleri (product_id bazında) listeler.
+    Kategori, marka filtreleme ve arama desteği ile.
     """
+    # Filtre parametrelerini al
+    selected_category = request.args.get("category", "")
+    selected_brand = request.args.get("brand", "")
+    search_query = request.args.get("search", "").strip()
+    
     pipeline = [
         {
             "$group": {
@@ -49,11 +50,53 @@ def index():
         },
         {"$sort": {"product_name": 1}},
     ]
+    
+    # Kategori filtresi
+    if selected_category:
+        pipeline.insert(0, {"$match": {"category": selected_category}})
+    
     products = list(mongo.db.e_ticaret_offers.aggregate(pipeline))
+    
     # Flask tarafında erişimi kolaylaştırmak için _id yerine product_id kullan
     for p in products:
         p["product_id"] = p.pop("_id")
-    return render_template("index.html", products=products)
+    
+    # Arama filtresi (ürün adında arama)
+    if search_query:
+        search_lower = search_query.lower()
+        products = [
+            p for p in products 
+            if search_lower in p.get("product_name", "").lower() or 
+               search_lower in p.get("product_id", "").lower()
+        ]
+    
+    # Marka filtresi
+    if selected_brand:
+        products = [p for p in products if selected_brand.lower() in p.get("product_name", "").lower()]
+    
+    # Tüm kategorileri ve markaları al (filtreleme için)
+    all_categories = sorted(set(p.get("category") for p in products if p.get("category")))
+    
+    # Markaları product_name'den çıkar (ilk kelime genelde marka)
+    all_brands = set()
+    for p in products:
+        product_name = p.get("product_name", "")
+        if product_name:
+            # İlk kelimeyi marka olarak al
+            first_word = product_name.split()[0] if product_name.split() else ""
+            if first_word and len(first_word) > 2:  # Çok kısa kelimeleri atla
+                all_brands.add(first_word)
+    all_brands = sorted(all_brands)
+    
+    return render_template(
+        "index.html", 
+        products=products,
+        categories=all_categories,
+        brands=all_brands,
+        selected_category=selected_category,
+        selected_brand=selected_brand,
+        search_query=search_query
+    )
 
 
 @app.route("/product/<product_id>")
@@ -93,6 +136,14 @@ def product_detail(product_id):
         else:
             # Orijinal değeri kullan
             offer["_id"]["seller_nickname"] = offer.get("seller_nickname_original")
+    
+    # Boş kayıtları filtrele (site veya vendor_name olmayanları)
+    offers = [
+        o for o in offers 
+        if o.get("_id", {}).get("site") and 
+           o.get("_id", {}).get("vendor_name") and
+           (o.get("price") is not None or o.get("rating") is not None or o.get("review_count") is not None)
+    ]
     
     # En ucuz fiyatı hesapla (None olmayan fiyatlar arasından)
     valid_prices = [o["price"] for o in offers if o.get("price") is not None and isinstance(o["price"], (int, float))]
