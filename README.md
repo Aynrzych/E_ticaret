@@ -75,7 +75,7 @@ python main.py product_id
 
 ### Web Arayüzü
 
-Tarayıcıda `http://localhost:5000` adresine gidin.
+Tarayıcıda `http://localhost:5001` adresine gidin.
 
 ## Proje Yapısı
 
@@ -91,7 +91,6 @@ E-Ticaret-Projesi/
 │   └── utils.py            # Yardımcı fonksiyonlar
 ├── analiz/             # Veri analizi modülleri
 │   ├── analiz.py          # Analiz fonksiyonları
-│   └── grafik.py          # Grafik oluşturma
 ├── templates/          # HTML şablonları
 │   ├── index.html         # Ana sayfa
 │   └── product_detail.html # Ürün detay sayfası
@@ -117,4 +116,5 @@ E-Ticaret-Projesi/
 ## Lisans
 
 Bu proje eğitim amaçlıdır.
+Mühendislikte bilgisayar uygulamaları dersi kapsamında gerçekleştirilmiştir.
 
