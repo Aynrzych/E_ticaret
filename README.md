@@ -91,7 +91,6 @@ E-Ticaret-Projesi/
 │   └── utils.py            # Yardımcı fonksiyonlar
 ├── analiz/             # Veri analizi modülleri
 │   ├── analiz.py          # Analiz fonksiyonları
-│   └── grafik.py          # Grafik oluşturma
 ├── templates/          # HTML şablonları
 │   ├── index.html         # Ana sayfa
 │   └── product_detail.html # Ürün detay sayfası
